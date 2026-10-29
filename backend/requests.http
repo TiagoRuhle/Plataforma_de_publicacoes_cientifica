@@ -1,0 +1,79 @@
+### Cliente HTTP do VS Code (extensão "REST Client") ou do IntelliJ.
+### NÃO cole tokens reais em ficheiros que vão para o git: usa o login abaixo e copia o token só para esta sessão.
+
+@host = http://localhost:8080/projeto/api
+@token = COLE_AQUI_O_TOKEN_DEVOLVIDO_PELO_LOGIN
+
+### Login (devolve o JWT em texto)
+POST {{host}}/auth/login
+Content-Type: application/json
+
+{ "username": "colaborador", "password": "colaborador" }
+
+### Eu
+GET {{host}}/users/me
+Authorization: Bearer {{token}}
+
+### Pesquisa paginada: texto livre, tag, ano, ordenação por rating médio
+GET {{host}}/publicacoes/search?q=learning&tag=Projeto X&anoDe=2023&sort=rating&dir=desc&page=0&size=10
+Authorization: Bearer {{token}}
+
+### Ordenar por número de comentários
+GET {{host}}/publicacoes/search?sort=comentarios&dir=desc
+Authorization: Bearer {{token}}
+
+### Detalhe
+GET {{host}}/publicacoes/1
+Authorization: Bearer {{token}}
+
+### Descarregar o ficheiro
+GET {{host}}/publicacoes/1/download
+Authorization: Bearer {{token}}
+
+### Corrigir o resumo gerado pela IA
+PUT {{host}}/publicacoes/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "resumo": "Resumo corrigido manualmente." }
+
+### Pedir novo resumo à IA
+POST {{host}}/publicacoes/1/resumo/regenerar
+Authorization: Bearer {{token}}
+
+### Rating
+POST {{host}}/publicacoes/1/rating
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "rating": 5 }
+
+### Comentar
+POST {{host}}/comentarios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "publicacaoId": 1, "texto": "Muito útil para o Projeto X." }
+
+### Subscrever uma tag
+POST {{host}}/subscricao
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nome": "Projeto X" }
+
+### As minhas subscrições
+GET {{host}}/users/view/subscricoes
+Authorization: Bearer {{token}}
+
+### Recuperar password (responde sempre 202)
+POST {{host}}/auth/forgot-password
+Content-Type: application/json
+
+{ "email": "colaborador@projeto.com" }
+
+### Repor password com o token recebido por e-mail
+POST {{host}}/auth/reset-password
+Content-Type: application/json
+
+{ "token": "TOKEN_DO_EMAIL", "newPassword": "nova-password-123" }

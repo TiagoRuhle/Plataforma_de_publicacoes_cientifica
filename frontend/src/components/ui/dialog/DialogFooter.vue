@@ -1,0 +1,12 @@
+<script setup>
+import { cn } from '@/lib/utils'
+
+defineOptions({ name: 'UiDialogFooter' })
+const props = defineProps({ class: { type: null, required: false } })
+</script>
+
+<template>
+  <div :class="cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', props.class)">
+    <slot />
+  </div>
+</template>

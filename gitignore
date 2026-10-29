@@ -1,0 +1,49 @@
+# ---------- Segredos (NUNCA versionar) ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---------- IDEs ----------
+.idea/
+*.iml
+*.iws
+.vscode/*
+!.vscode/extensions.json
+.fleet/
+.project
+.classpath
+.settings/
+
+# ---------- Sistema operativo ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Backend (Java / Maven) ----------
+target/
+*.class
+*.log
+*.war
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+dependency-reduced-pom.xml
+
+# ---------- Frontend (Node / Vite) ----------
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.local
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Ficheiros carregados / dados locais ----------
+uploads/
+*.sqlite
+*.db

@@ -1,0 +1,38 @@
+# Build
+target/
+*.war
+*.class
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Segredos e configuração local
+.env
+*.local
+
+# IDEs (têm tokens, cookies e dados de ligação à BD)
+.idea/
+http-client.cookies
+httpRequests/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.classpath
+.factorypath
+.project
+.settings/
+.apt_generated
+.springBeans
+.sts4-cache
+.kotlin
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+# Sistema
+.DS_Store
+*.log

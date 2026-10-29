@@ -1,0 +1,234 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Newsreader Variable", ui-serif, Georgia, "Times New Roman", serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-star: var(--star);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+
+  /* hierarquia de raios: chips < controlos < painéis */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.125rem;
+}
+
+/*
+ * Sistema de cor: a interface é monocromática (tinta sobre papel frio) e a cor fica reservada
+ * para os dados: tags, avaliações e estados.
+ */
+:root {
+  --background: oklch(0.968 0.006 258);          /* bancada */
+  --foreground: oklch(0.255 0.045 262);          /* tinta */
+  --card: oklch(1 0 0);                          /* folha */
+  --card-foreground: oklch(0.255 0.045 262);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.255 0.045 262);
+  --primary: oklch(0.255 0.045 262);
+  --primary-foreground: oklch(0.985 0.004 258);
+  --secondary: oklch(0.94 0.01 258);
+  --secondary-foreground: oklch(0.255 0.045 262);
+  --muted: oklch(0.94 0.01 258);
+  --muted-foreground: oklch(0.5 0.04 262);
+  --accent: oklch(0.93 0.014 258);
+  --accent-foreground: oklch(0.255 0.045 262);
+  --destructive: oklch(0.55 0.21 25);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.9 0.012 258);
+  --input: oklch(0.86 0.016 258);
+  --ring: oklch(0.56 0.2 268);                   /* cobalto: foco e seleção */
+  --signal: oklch(0.52 0.21 268);
+  --star: oklch(0.78 0.16 78);
+  --success: oklch(0.52 0.13 160);
+  --warning: oklch(0.62 0.15 70);
+  --sidebar: oklch(0.985 0.004 258);
+  --sidebar-foreground: oklch(0.255 0.045 262);
+  --sidebar-border: oklch(0.9 0.012 258);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.185 0.022 262);
+  --foreground: oklch(0.945 0.012 258);
+  --card: oklch(0.225 0.026 262);
+  --card-foreground: oklch(0.945 0.012 258);
+  --popover: oklch(0.25 0.028 262);
+  --popover-foreground: oklch(0.945 0.012 258);
+  --primary: oklch(0.945 0.012 258);
+  --primary-foreground: oklch(0.22 0.03 262);
+  --secondary: oklch(0.28 0.028 262);
+  --secondary-foreground: oklch(0.945 0.012 258);
+  --muted: oklch(0.28 0.028 262);
+  --muted-foreground: oklch(0.72 0.03 260);
+  --accent: oklch(0.31 0.03 262);
+  --accent-foreground: oklch(0.945 0.012 258);
+  --destructive: oklch(0.66 0.2 25);
+  --destructive-foreground: oklch(0.15 0.02 262);
+  --border: oklch(0.3 0.026 262);
+  --input: oklch(0.36 0.03 262);
+  --ring: oklch(0.7 0.16 268);
+  --signal: oklch(0.72 0.15 268);
+  --star: oklch(0.82 0.15 82);
+  --success: oklch(0.74 0.14 160);
+  --warning: oklch(0.8 0.14 75);
+  --sidebar: oklch(0.205 0.024 262);
+  --sidebar-foreground: oklch(0.945 0.012 258);
+  --sidebar-border: oklch(0.29 0.026 262);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    font-size: 15px;
+    line-height: 1.55;
+    font-optical-sizing: auto;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--signal) 28%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  button,
+  [role="button"],
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  /* Tipografia editorial: títulos e resumos em serifa, interface em grotesca */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 560;
+    letter-spacing: -0.012em;
+    line-height: 1.12;
+  }
+  .reading {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.72;
+    max-width: 68ch;
+  }
+
+  /* texto formatado do resumo (vem de renderResumo) */
+  .reading p + p,
+  .reading ul + p,
+  .reading p + ul {
+    margin-top: 0.9em;
+  }
+  .reading h3 {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    margin-top: 1.6em;
+    margin-bottom: 0.3em;
+  }
+  .reading h3:first-child {
+    margin-top: 0;
+  }
+  .reading ul {
+    list-style: disc;
+    padding-left: 1.25em;
+  }
+  .reading li + li {
+    margin-top: 0.25em;
+  }
+
+  /* Tags: cada uma tem sempre a mesma cor (matiz --h definido em linha). */
+  .tag-hue {
+    --tag-bg: oklch(0.955 0.03 var(--h));
+    --tag-fg: oklch(0.38 0.1 var(--h));
+    --tag-line: oklch(0.88 0.05 var(--h));
+    --tag-spine: oklch(0.7 0.14 var(--h));
+  }
+  .dark .tag-hue {
+    --tag-bg: oklch(0.31 0.05 var(--h));
+    --tag-fg: oklch(0.87 0.08 var(--h));
+    --tag-line: oklch(0.4 0.07 var(--h));
+    --tag-spine: oklch(0.72 0.13 var(--h));
+  }
+
+  .skeleton {
+    @apply rounded-md bg-muted;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton {
+    background-image: linear-gradient(
+      100deg,
+      transparent 30%,
+      color-mix(in oklch, var(--card) 70%, transparent) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    from {
+      background-position: 120% 0;
+    }
+    to {
+      background-position: -120% 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

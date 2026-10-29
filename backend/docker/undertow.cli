@@ -1,0 +1,9 @@
+# Corre uma vez, ao construir a imagem (ver Dockerfile).
+#
+# O Undertow (servidor web do WildFly) limita por omissão o corpo dos pedidos a 10 MB (max-post-size), o que faria
+# falhar uploads entre 10 e 50 MB apesar de a aplicação aceitar MAX_UPLOAD_MB=50. Este valor tem de ser SEMPRE
+# um pouco maior do que MAX_UPLOAD_MB (margem para os campos do formulário): 60 MB = 62914560 bytes.
+# É também a primeira linha de defesa contra pedidos gigantes: o servidor recusa-os antes de a aplicação os ler.
+embed-server --std-out=echo --server-config=standalone.xml
+/subsystem=undertow/server=default-server/http-listener=default:write-attribute(name=max-post-size, value=62914560)
+stop-embedded-server

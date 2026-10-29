@@ -1,0 +1,106 @@
+# Sistema auto-contido: base de dados, SMTP de desenvolvimento, IA (Ollama) e servidor aplicacional.
+#   make up        -> levanta tudo
+#   make deploy    -> compila e instala o .war no WildFly
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  smtp:
+    image: ghusta/fakesmtp
+    restart: unless-stopped
+    ports:
+      - "2525:25"
+
+  # IA: contentor padrão do Ollama (RT6). A aplicação Jakarta EE só implementa o cliente da API.
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    # Com GPU NVIDIA, descomente:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # Descarrega o modelo uma vez (fica no volume ollama-models) e termina.
+  ollama-pull:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["ollama", "pull", "${OLLAMA_MODEL:-llama3.2}"]
+    restart: "no"
+
+  webserver:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      - DATASOURCE_JNDI
+      - DATASOURCE_NAME
+      - DB_USER
+      - DB_PASS
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+      - WILDFLY_ADMIN_PASSWORD
+      - POSTGRES_DRIVER_VERSION
+      - JWT_SECRET=${JWT_SECRET:?Defina JWT_SECRET no ficheiro .env (copie de .env.example)}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:5173}
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:5173}
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
+      - UPLOAD_DIR=/data/uploads
+      # Limites (valores por omissão pensados para uma máquina de desenvolvimento)
+      - MAX_UPLOAD_MB=${MAX_UPLOAD_MB:-50}   # se aumentar, aumente também max-post-size em docker/undertow.cli
+      - AI_MAX_CONCURRENT=${AI_MAX_CONCURRENT:-1}
+      - AI_MAX_QUEUE=${AI_MAX_QUEUE:-20}
+      - AI_BREAKER_FAILURES=${AI_BREAKER_FAILURES:-3}
+      - AI_BREAKER_OPEN_SECONDS=${AI_BREAKER_OPEN_SECONDS:-60}
+      - PDF_MAX_PAGES=${PDF_MAX_PAGES:-150}
+      - PDF_TIMEOUT_SECONDS=${PDF_TIMEOUT_SECONDS:-60}
+      - SMTP_HOST=smtp
+      - SMTP_PORT=25
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+      smtp:
+        condition: service_started
+      # O Ollama NÃO é obrigatório para arrancar: se estiver em baixo, os resumos ficam em
+      # estado ERRO e podem ser regenerados quando voltar.
+
+volumes:
+  db-data:
+  ollama-models:
+  uploads:
