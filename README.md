@@ -1,6 +1,6 @@
 # Plataforma de Publicações Científicas
 
-Aplicação web para submeter, organizar e consultar publicações científicas (artigos, teses, relatórios e datasets). Cada publicação em PDF recebe um **resumo estruturado gerado por IA** (Ollama, executado localmente), que pode ser editado ou regenerado.
+Aplicação web para submeter, organizar e consultar publicações científicas (artigos, teses, relatórios e datasets). Cada publicação em PDF recebe um resumo estruturado gerado por IA (Ollama, executado localmente), que pode ser editado ou regenerado.
 
 Projeto desenvolvido no âmbito do curso de Engenharia Informática (ESTG – Politécnico de Leiria).
 
@@ -93,8 +93,6 @@ npm run test:run
 ## Contas de demonstração
 
 Criadas automaticamente pelo seed na primeira execução.
-
-> ⚠️ **Apenas para desenvolvimento e demonstração.** Estas credenciais são públicas. Nunca as use num ambiente real e altere/remova estas contas antes de qualquer deploy.
 
 | Username | Password | Perfil | Estado |
 |---|---|---|---|
