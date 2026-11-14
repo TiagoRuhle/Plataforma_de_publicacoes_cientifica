@@ -1,8 +1,29 @@
 # Plataforma de Publicações Científicas
 
+[![CI](https://github.com/TiagoRuhle/Plataforma_de_publicacoes_cientifica/actions/workflows/ci.yml/badge.svg)](https://github.com/TiagoRuhle/Plataforma_de_publicacoes_cientifica/actions/workflows/ci.yml)
+
 Aplicação web para submeter, organizar e consultar publicações científicas (artigos, teses, relatórios e datasets). Cada publicação em PDF recebe um resumo estruturado gerado por IA (Ollama, executado localmente), que pode ser editado ou regenerado.
 
 Projeto desenvolvido no âmbito do curso de Engenharia Informática (ESTG – Politécnico de Leiria).
+
+![Lista de publicações](docs/screenshots/publicacoes.png)
+
+## Capturas de ecrã
+
+| Resumo gerado por IA | Nova publicação |
+|---|---|
+| ![Detalhe de uma publicação com resumo gerado por IA](docs/screenshots/resumo-ia.png) | ![Upload de uma nova publicação](docs/screenshots/nova-publicacao.png) |
+
+| Gestão de utilizadores | Histórico e estatísticas |
+|---|---|
+| ![Gestão de utilizadores](docs/screenshots/utilizadores.png) | ![Histórico de ações](docs/screenshots/historico.png) |
+
+<details>
+<summary>Do upload ao resumo por IA (GIF)</summary>
+
+![Upload de um PDF e geração do resumo](docs/screenshots/resumo-ia.gif)
+
+</details>
 
 ## Funcionalidades
 
@@ -23,6 +44,25 @@ Projeto desenvolvido no âmbito do curso de Engenharia Informática (ESTG – Po
 - **Ambiente totalmente containerizado** com Docker Compose (BD, SMTP de desenvolvimento, IA e servidor aplicacional)
 - **Testes**: unitários (JUnit 5), de integração com REST Assured (perfil Maven `it`) e do frontend com Vitest
 - **Seed idempotente** que cobre todos os cenários (roles, utilizador suspenso, tag oculta, publicação oculta, comentário oculto, ratings e subscrições)
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    U([Utilizador]) --> FE["Frontend<br/>Vue 3 + Vite<br/>:5173"]
+    FE -- "REST + JWT<br/>/projeto/api" --> API
+
+    subgraph WF["WildFly 27 · :8080"]
+        API["API JAX-RS<br/>(RESTEasy)"] --> EJB["EJBs / regras de negócio"]
+        EJB --> AI["Pipeline de IA<br/>fila + circuit breaker"]
+    end
+
+    EJB -- JPA / Hibernate --> DB[("PostgreSQL 16")]
+    AI -- "texto do PDF<br/>(PDFBox)" --> OL["Ollama<br/>llama3.2"]
+    EJB -- "notificações" --> SMTP["FakeSMTP"]
+```
+
+Todos os serviços do lado direito correm em Docker Compose (`backend/docker-compose.yaml`). O resumo é gerado de forma assíncrona: se o Ollama falhar, o *circuit breaker* abre, a publicação fica guardada com o resumo em estado de erro e pode ser regenerada mais tarde.
 
 ## Stack
 
