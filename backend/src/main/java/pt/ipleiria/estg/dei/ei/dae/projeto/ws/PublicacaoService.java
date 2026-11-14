@@ -192,7 +192,7 @@ public class PublicacaoService {
         List<InputPart> tagParts = map.get("tags");
         if (tagParts != null) {
             for (InputPart part : tagParts) {
-                tags.add(part.getBodyAsString());
+                tags.add(texto(part));
             }
         }
         dados.setTags(tags);
@@ -370,7 +370,17 @@ public class PublicacaoService {
         if (partes == null || partes.isEmpty()) {
             throw new BusinessRuleException("Campo obrigatório em falta: " + nome);
         }
-        return partes.get(0).getBodyAsString();
+        return texto(partes.get(0));
+    }
+
+    /**
+     * Lê um campo de texto do multipart sempre em UTF-8. O browser não indica o charset
+     * em cada parte e, sem isto, o RESTEasy assume US-ASCII ("Informática" → "Inform��tica").
+     */
+    private static String texto(InputPart parte) throws IOException {
+        try (InputStream in = parte.getBody(InputStream.class, null)) {
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     private static LocalDate data(String valor, String nome) {
