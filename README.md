@@ -18,12 +18,11 @@ Projeto desenvolvido no âmbito do curso de Engenharia Informática (ESTG – Po
 |---|---|
 | ![Gestão de utilizadores](docs/screenshots/utilizadores.png) | ![Histórico de ações](docs/screenshots/historico.png) |
 
-<details>
-<summary>Do upload ao resumo por IA (GIF)</summary>
+**Do upload ao resumo por IA:**
 
-![Upload de um PDF e geração do resumo](docs/screenshots/resumo-ia.gif)
+https://github.com/user-attachments/assets/7b282e08-7467-4a6a-9622-f14315082b73
 
-</details>
+
 
 ## Funcionalidades
 
