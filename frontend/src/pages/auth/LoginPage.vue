@@ -68,17 +68,13 @@ async function entrar() {
         />
       </div>
 
-      <div class="space-y-2">
-        <div class="flex items-center justify-between">
-          <Label for="password">Palavra-passe</Label>
-          <RouterLink
-            :to="{ name: 'forgot-password' }"
-            class="text-signal text-sm underline-offset-4 hover:underline"
-          >
-            Esqueceu-se?
-          </RouterLink>
-        </div>
-        <div class="relative">
+      <!--
+        O link "Esqueceu-se?" aparece ao lado do rótulo, mas vem depois do campo no HTML,
+        para que o Tab passe do utilizador diretamente para a palavra-passe.
+      -->
+      <div class="grid grid-cols-[1fr_auto] items-center gap-y-2">
+        <Label for="password" class="col-start-1 row-start-1">Palavra-passe</Label>
+        <div class="relative col-span-2 row-start-2">
           <Input
             id="password"
             v-model="password"
@@ -97,6 +93,12 @@ async function entrar() {
             <Eye v-else class="size-4" />
           </button>
         </div>
+        <RouterLink
+          :to="{ name: 'forgot-password' }"
+          class="text-signal col-start-2 row-start-1 text-sm underline-offset-4 hover:underline"
+        >
+          Esqueceu-se?
+        </RouterLink>
       </div>
 
       <p v-if="route.query.expired" class="text-muted-foreground text-sm">A sua sessão terminou.</p>
